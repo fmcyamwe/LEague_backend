@@ -1,0 +1,68 @@
+package main
+
+import (
+	"strconv"
+)
+
+// Run with
+//		go run .
+// Send request with:
+//		curl -F 'file=@/path/matrix.csv' "localhost:8080/echo"
+
+// bon gets all records in memory--might be bad for large stuff
+/*func readFile(r *http.Request) ([][]string, error) {
+
+	file, _, err := r.FormFile("file")
+	if err != nil {
+		//w.Write([]byte(fmt.Sprintf("error %s", err.Error())))
+		return [][]string{}, err
+	}
+	defer file.Close()
+	records, err := csv.NewReader(file).ReadAll()
+	if err != nil {
+		//w.Write([]byte(fmt.Sprintf("error %s", err.Error())))
+		return [][]string{}, err
+	}
+	return records, nil
+}*/
+
+func doInvert(records [][]string) [][]string {
+	numRows := len(records)
+	numColumns := len(records[0]) //just in case it's not square
+
+	m := make([][]string, numColumns)
+	for i := range records {
+		m[i] = make([]string, numRows)
+	}
+
+	//populate
+	for i := 0; i < numRows; i++ {
+		for j := 0; j < numColumns; j++ {
+			m[j][i] = records[i][j]
+		}
+	}
+	return m
+}
+
+func doSumRow(r []string) int {
+	result := 0
+	for _, num := range r {
+		n, _ := strconv.Atoi(num) //pull this into func to throw panic that gets handled at some point....TODO
+		result = result + n
+	}
+	return result
+}
+
+func doMultiplyRow(r []string) int {
+	result := 1
+	for _, num := range r {
+		n, _ := strconv.Atoi(num) //pull this into func to throw panic that gets handled at some point....TODO
+		result = result * n
+	}
+	return result
+
+}
+
+func sendResponse() {
+
+}
